@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Political Quartett</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/lobby.css">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <div id="game-container">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="screen active">
+            <div class="screen-content">
+                <h1>Political Quartett</h1>
+                <div class="spinner"></div>
+                <p id="loading-message">Loading game...</p>
+            </div>
+        </div>
+
+        <!-- Main Menu -->
+        <div id="main-menu" class="screen">
+            <div class="screen-content">
+                <h1>Political Quartett</h1>
+                <div class="menu-buttons">
+                    <button id="play-button" class="menu-button">Play Online</button>
+                    <button id="play-ai-button" class="menu-button">Play vs. AI</button>
+                    <button id="lobby-button" class="menu-button">Game Lobbies</button>
+                    <button id="rules-button" class="menu-button">Rules</button>
+                </div>
+                <div id="player-count-container">
+                    <span id="player-count">0 players online</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lobby screens -->
+        <div id="lobby-browser-screen" class="screen">
+            <h2>Game Lobbies</h2>
+            <div class="lobby-list" id="lobby-list">
+                <!-- Lobbies will be added here dynamically -->
+                <div class="no-lobbies-message">No active lobbies found. Create your own!</div>
+            </div>
+            <div class="lobby-actions">
+                <button id="create-new-lobby" class="main-button">Create New Lobby</button>
+                <button id="refresh-lobbies" class="secondary-button"><i class="fas fa-sync-alt"></i> Refresh</button>
+                <button id="join-by-code" class="secondary-button">Join by Code</button>
+                <button id="back-from-lobbies" class="secondary-button">Back to Menu</button>
+            </div>
+        </div>
+
+        <div id="create-lobby-screen" class="screen">
+            <h2>Create Game Lobby</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="lobby-name">Lobby Name:</label>
+                    <input type="text" id="lobby-name" placeholder="My Game Lobby">
+                </div>
+                <div class="form-group">
+                    <label for="username">Your Name:</label>
+                    <input type="text" id="username" placeholder="Your Name">
+                </div>
+                <div class="form-group password-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="use-password">
+                        <label for="use-password">Password Protected</label>
+                    </div>
+                    <input type="password" id="lobby-password" placeholder="Password" disabled>
+                </div>
+            </div>
+            <div class="lobby-actions">
+                <button id="create-lobby-submit" class="main-button">Create Lobby</button>
+                <button id="back-from-create" class="secondary-button">Cancel</button>
+            </div>
+        </div>
+
+        <div id="join-by-code-screen" class="screen">
+            <h2>Join Game by Code</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="invite-code">Invite Code:</label>
+                    <input type="text" id="invite-code" placeholder="XXXXXX" maxlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="username-join">Your Name:</label>
+                    <input type="text" id="username-join" placeholder="Your Name">
+                </div>
+                <div class="form-group">
+                    <label for="join-password">Password (if required):</label>
+                    <input type="password" id="join-password" placeholder="Password">
+                </div>
+            </div>
+            <div class="lobby-actions">
+                <button id="join-by-code-submit" class="main-button">Join Game</button>
+                <button id="back-from-join-code" class="secondary-button">Cancel</button>
+            </div>
+        </div>
+
+        <div id="lobby-screen" class="screen">
+            <h2 id="lobby-title">Game Lobby</h2>
+            <div class="invite-section">
+                <div class="invite-code">
+                    <span>Invite Code: </span>
+                    <span id="display-invite-code" class="code">XXXXXX</span>
+                    <button id="copy-invite" class="icon-button" title="Copy to clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <div class="invite-link">
+                    <span>Share Link: </span>
+                    <input type="text" id="invite-link" readonly>
+                    <button id="copy-link" class="icon-button" title="Copy to clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="players-container">
+                <h3>Players</h3>
+                <div class="player-list" id="player-list">
+                    <!-- Players will be added here dynamically -->
+                </div>
+                <div class="waiting-message">Waiting for players to join... (1/2)</div>
+            </div>
+            <div class="lobby-actions">
+                <button id="start-game-lobby" class="main-button">Start Game</button>
+                <button id="leave-lobby" class="secondary-button">Leave Lobby</button>
+            </div>
+        </div>
+
+        <div id="matchmaking-screen" class="screen">
+            <h2>Finding Opponent...</h2>
+            <div class="spinner"></div>
+            <p id="queue-status">Players in queue: <span id="queue-players-count">0</span></p>
+            <button id="cancel-matchmaking" class="secondary-button">Cancel</button>
+        </div>
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div class="player-info" id="player-info">
+                    <span class="player-name">You</span>
+                    <span class="card-count">Cards: <span id="player-cards-count">5</span></span>
+                </div>
+                <div class="versus">VS</div>
+                <div class="player-info" id="opponent-info">
+                    <span class="player-name" id="opponent-name">Opponent</span>
+                    <span class="card-count">Cards: <span id="opponent-cards-count">5</span></span>
+                </div>
+            </div>
+            <div class="game-area">
+                <div class="player-side">
+                    <div id="player-card" class="card">
+                        <!-- Card content will be dynamically added -->
+                    </div>
+                    <div class="card-controls" id="category-selection">
+                        <!-- Category buttons will be added here -->
+                    </div>
+                </div>
+                <div class="battle-area">
+                    <div id="battle-result"></div>
+                </div>
+                <div class="opponent-side">
+                    <div id="opponent-card" class="card">
+                        <!-- Card content will be dynamically added -->
+                    </div>
+                </div>
+            </div>
+            <div id="turn-indicator">Your Turn</div>
+            <div class="game-actions">
+                <button id="leave-game" class="secondary-button">Leave Game</button>
+            </div>
+        </div>
+        <div id="rules-screen" class="screen">
+            <h2>Game Rules</h2>
+            <div class="rules-content">
+                <h3>Game Description</h3>
+                <p>In this game, players compete using cards representing political figures. Each card features six
+                    attributes:
+                    Charisma, Leadership, Influence, Integrity, Trickery, and Wealth, each rated between 1 and 10.
+                    Players must strategically select a category to challenge their opponent, aiming to collect all
+                    cards to win.</p>
+                <h3>Game Rules</h3>
+                <ul>
+                    <li>10 Cards, each featuring a political figure.</li>
+                    <li>Each card has six numeric attributes (1-10 points each).</li>
+                    <li>Each player draws 5 cards randomly.</li>
+                    <li>The starting player selects a category and plays a card.</li>
+                    <li>The opponent draws a card and plays it for comparison.</li>
+                    <li>The player with the higher value in the selected category wins both cards.</li>
+                    <li>In case of a tie, players immediately play their next cards, continuing with the same category.
+                    </li>
+                    <li>The first player to collect all the cards wins the game.</li>
+                </ul>
+            </div>
+            <button id="back-to-menu" class="secondary-button">Back to Menu</button>
+        </div>
+        <div id="game-over-screen" class="screen">
+            <h2 id="result-message">Game Over</h2>
+            <div id="result-details"></div>
+            <button id="play-again" class="main-button">Play Again</button>
+            <button id="back-to-menu-end" class="secondary-button">Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- Toast Container for Notifications -->
+    <div id="toast-container"></div>
+
+    <!-- Game Scripts -->
+    <script src="js/card-data.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/network.js"></script>
+    <script src="js/lobby.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

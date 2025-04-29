@@ -1,0 +1,247 @@
+/* Lobby System Styles */
+
+.hidden {
+    display: none !important;
+}
+
+#lobby-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+.lobby-container {
+    width: 100%;
+    max-width: 600px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.lobby-browser {
+    width: 100%;
+    max-width: 600px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+/* Invite Code Section */
+.invite-section {
+    margin-bottom: 2rem;
+}
+
+.invite-code-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f2f5;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.invite-label {
+    font-weight: 600;
+    margin-right: 0.5rem;
+    color: #4b5563;
+}
+
+.invite-code {
+    font-family: monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #3b82f6;
+    margin: 0 0.5rem;
+    letter-spacing: 1px;
+}
+
+.copy-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #6b7280;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.copy-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #3b82f6;
+}
+
+.copy-button.copied {
+    color: #10b981;
+}
+
+/* Players Section */
+.players-section {
+    margin-bottom: 2rem;
+}
+
+.player-list {
+    margin-bottom: 1rem;
+}
+
+.player-item {
+    padding: 0.75rem 1rem;
+    background-color: #f0f2f5;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.waiting-message {
+    background-color: #fffbeb;
+    border-left: 3px solid #f59e0b;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: #92400e;
+    border-radius: 0 4px 4px 0;
+}
+
+/* Lobby List */
+.lobby-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+}
+
+.lobby-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background-color: #f0f2f5;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s;
+}
+
+.lobby-item:hover {
+    background-color: #e5e7eb;
+    transform: translateY(-2px);
+}
+
+.lobby-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.lobby-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.lobby-players {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.no-lobbies-message {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* Buttons */
+.lobby-actions,
+.browser-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.primary-button,
+.secondary-button,
+.join-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.primary-button {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.primary-button:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+}
+
+.secondary-button {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+.secondary-button:hover {
+    background-color: #e5e7eb;
+    transform: translateY(-2px);
+}
+
+.join-button {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.join-button:hover {
+    background-color: #2563eb;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+
+    .lobby-actions,
+    .browser-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .primary-button,
+    .secondary-button {
+        width: 100%;
+    }
+}

@@ -1,0 +1,50 @@
+
+# 📜 Game Description
+
+In this game, players compete using cards representing political figures. Each card features six attributes: 
+Charisma, Leadership, Influence, Integrity, Trickery, and Wealth, each rated between 1 and 10.
+Players must strategically select a category to challenge their opponent, aiming to collect all cards to win.
+
+---
+
+# 🧠 Game Rules
+
+- 10 Cards, each featuring a political figure.
+- Each card has six numeric attributes (1-10 points each):
+  - Charisma
+  - Leadership
+  - Influence
+  - Integrity
+  - Trickery
+  - Wealth
+- Each player draws 5 cards randomly.
+- The starting player selects a category and plays a card.
+- The opponent draws a card and plays it for comparison.
+- The player with the higher value in the selected category wins both cards.
+- In case of a tie, players immediately play their next cards, continuing with the same category.
+- The first player to collect all the cards wins the game.
+
+---
+
+# 📋 Character Card Values
+
+| Name                  | Charisma | Leadership | Influence | Integrity | Trickery | Wealth |
+|------------------------|:--------:|:----------:|:---------:|:---------:|:--------:|:------:|
+| Donald Trump           |    9     |     6      |     9     |     2     |    10    |    9   |
+| Barack Obama           |   10     |     9      |     9     |     8     |     3    |    6   |
+| Recep Tayyip Erdoğan   |    7     |     8      |     8     |     3     |     8    |    7   |
+| Karl Lauterbach        |    5     |     6      |     6     |     7     |     3    |    4   |
+| Angela Merkel          |    6     |     8      |     8     |     7     |     4    |    6   |
+| Greta Thunberg         |    7     |     6      |     7     |     9     |     2    |    2   |
+| Wolodymyr Selenskyj    |    8     |     9      |     9     |     7     |     5    |    5   |
+| Peer Steinbrück        |    5     |     6      |     5     |     6     |     3    |    4   |
+| Wladimir Putin         |    7     |     9      |    10     |     2     |    10    |   10   |
+| Markus Söder           |    7     |     7      |     7     |     5     |     6    |    5   |
+
+---
+
+# 🗂️ Explanation
+
+This table lists the political figures available as cards, along with their attributes. 
+Each attribute represents an important skill or trait in the game's context. 
+Players will strategically choose categories to maximize their chances of winning based on these stats.
