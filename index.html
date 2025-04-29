@@ -4,136 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Political Quartett</title>
+    <title>Political Card Game</title>
     <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/lobby.css">
-    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
-    <div id="game-container">
-        <!-- Loading Screen -->
+    <div id="app">
+        <!-- Game screens will be dynamically loaded here -->
         <div id="loading-screen" class="screen active">
-            <div class="screen-content">
-                <h1>Political Quartett</h1>
-                <div class="spinner"></div>
-                <p id="loading-message">Loading game...</p>
-            </div>
+            <div class="spinner"></div>
+            <h2>Loading Game...</h2>
+            <p id="loading-message">Initializing game components...</p>
         </div>
-
-        <!-- Main Menu -->
         <div id="main-menu" class="screen">
-            <div class="screen-content">
+            <div class="logo-container">
                 <h1>Political Quartett</h1>
-                <div class="menu-buttons">
-                    <button id="play-button" class="menu-button">Play Online</button>
-                    <button id="play-ai-button" class="menu-button">Play vs. AI</button>
-                    <button id="lobby-button" class="menu-button">Game Lobbies</button>
-                    <button id="rules-button" class="menu-button">Rules</button>
-                </div>
-                <div id="player-count-container">
-                    <span id="player-count">0 players online</span>
-                </div>
+            </div>
+            <div class="menu-buttons">
+                <button id="play-button" class="main-button">Play Online</button>
+                <button id="play-ai-button" class="main-button">Play vs AI</button>
+                <button id="rules-button" class="main-button">Game Rules</button>
             </div>
         </div>
-
-        <!-- Lobby screens -->
-        <div id="lobby-browser-screen" class="screen">
-            <h2>Game Lobbies</h2>
-            <div class="lobby-list" id="lobby-list">
-                <!-- Lobbies will be added here dynamically -->
-                <div class="no-lobbies-message">No active lobbies found. Create your own!</div>
-            </div>
-            <div class="lobby-actions">
-                <button id="create-new-lobby" class="main-button">Create New Lobby</button>
-                <button id="refresh-lobbies" class="secondary-button"><i class="fas fa-sync-alt"></i> Refresh</button>
-                <button id="join-by-code" class="secondary-button">Join by Code</button>
-                <button id="back-from-lobbies" class="secondary-button">Back to Menu</button>
-            </div>
-        </div>
-
-        <div id="create-lobby-screen" class="screen">
-            <h2>Create Game Lobby</h2>
-            <div class="form-container">
-                <div class="form-group">
-                    <label for="lobby-name">Lobby Name:</label>
-                    <input type="text" id="lobby-name" placeholder="My Game Lobby">
-                </div>
-                <div class="form-group">
-                    <label for="username">Your Name:</label>
-                    <input type="text" id="username" placeholder="Your Name">
-                </div>
-                <div class="form-group password-group">
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="use-password">
-                        <label for="use-password">Password Protected</label>
-                    </div>
-                    <input type="password" id="lobby-password" placeholder="Password" disabled>
-                </div>
-            </div>
-            <div class="lobby-actions">
-                <button id="create-lobby-submit" class="main-button">Create Lobby</button>
-                <button id="back-from-create" class="secondary-button">Cancel</button>
-            </div>
-        </div>
-
-        <div id="join-by-code-screen" class="screen">
-            <h2>Join Game by Code</h2>
-            <div class="form-container">
-                <div class="form-group">
-                    <label for="invite-code">Invite Code:</label>
-                    <input type="text" id="invite-code" placeholder="XXXXXX" maxlength="6">
-                </div>
-                <div class="form-group">
-                    <label for="username-join">Your Name:</label>
-                    <input type="text" id="username-join" placeholder="Your Name">
-                </div>
-                <div class="form-group">
-                    <label for="join-password">Password (if required):</label>
-                    <input type="password" id="join-password" placeholder="Password">
-                </div>
-            </div>
-            <div class="lobby-actions">
-                <button id="join-by-code-submit" class="main-button">Join Game</button>
-                <button id="back-from-join-code" class="secondary-button">Cancel</button>
-            </div>
-        </div>
-
-        <div id="lobby-screen" class="screen">
-            <h2 id="lobby-title">Game Lobby</h2>
-            <div class="invite-section">
-                <div class="invite-code">
-                    <span>Invite Code: </span>
-                    <span id="display-invite-code" class="code">XXXXXX</span>
-                    <button id="copy-invite" class="icon-button" title="Copy to clipboard">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                </div>
-                <div class="invite-link">
-                    <span>Share Link: </span>
-                    <input type="text" id="invite-link" readonly>
-                    <button id="copy-link" class="icon-button" title="Copy to clipboard">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="players-container">
-                <h3>Players</h3>
-                <div class="player-list" id="player-list">
-                    <!-- Players will be added here dynamically -->
-                </div>
-                <div class="waiting-message">Waiting for players to join... (1/2)</div>
-            </div>
-            <div class="lobby-actions">
-                <button id="start-game-lobby" class="main-button">Start Game</button>
-                <button id="leave-lobby" class="secondary-button">Leave Lobby</button>
-            </div>
-        </div>
-
         <div id="matchmaking-screen" class="screen">
             <h2>Finding Opponent...</h2>
             <div class="spinner"></div>
-            <p id="queue-status">Players in queue: <span id="queue-players-count">0</span></p>
+            <p id="queue-status">Players in queue: <span id="players-count">0</span></p>
             <button id="cancel-matchmaking" class="secondary-button">Cancel</button>
         </div>
         <div id="game-screen" class="screen">
@@ -167,9 +64,6 @@
                 </div>
             </div>
             <div id="turn-indicator">Your Turn</div>
-            <div class="game-actions">
-                <button id="leave-game" class="secondary-button">Leave Game</button>
-            </div>
         </div>
         <div id="rules-screen" class="screen">
             <h2>Game Rules</h2>
@@ -202,15 +96,12 @@
             <button id="back-to-menu-end" class="secondary-button">Back to Menu</button>
         </div>
     </div>
-
-    <!-- Toast Container for Notifications -->
-    <div id="toast-container"></div>
-
-    <!-- Game Scripts -->
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script src="js/card-data.js"></script>
     <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
     <script src="js/network.js"></script>
-    <script src="js/lobby.js"></script>
     <script src="js/main.js"></script>
 </body>
 

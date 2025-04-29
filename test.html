@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Political Quartett - Test Suite</title>
+
+    <!-- Import required game files to test -->
+    <script src="js/game-new.js"></script>
+    <script src="core/PoliticalCardGame.js"></script>
+
+    <!-- Test utilities -->
+    <script>
+        // Global test utilities
+        window.TestUtils = {
+            // Create a mock object with specified methods
+            createMock: function (methods = {}) {
+                const mock = {};
+                const calls = {};
+
+                // Add methods to the mock
+                Object.keys(methods).forEach(methodName => {
+                    calls[methodName] = [];
+
+                    // If a function is provided, use it
+                    if (typeof methods[methodName] === 'function') {
+                        mock[methodName] = function (...args) {
+                            calls[methodName].push(args);
+                            return methods[methodName].apply(this, args);
+                        };
+                    } else {
+                        // Otherwise create a stub that returns the provided value
+                        mock[methodName] = function (...args) {
+                            calls[methodName].push(args);
+                            return methods[methodName];
+                        };
+                    }
+                });
+
+                // Add call tracking methods
+                mock.getCalls = function (methodName) {
+                    return calls[methodName] || [];
+                };
+
+                mock.wasCalled = function (methodName) {
+                    return (calls[methodName] || []).length > 0;
+                };
+
+                mock.getCallCount = function (methodName) {
+                    return (calls[methodName] || []).length;
+                };
+
+                return mock;
+            },
+
+            // Create a spy for an existing object method
+            spyOn: function (obj, methodName) {
+                const originalMethod = obj[methodName];
+                const calls = [];
+
+                obj[methodName] = function (...args) {
+                    calls.push(args);
+                    return originalMethod.apply(this, args);
+                };
+
+                // Add spy methods
+                obj[methodName].calls = calls;
+                obj[methodName].restore = function () {
+                    obj[methodName] = originalMethod;
+                };
+
+                return obj[methodName];
+            },
+
+            // Create mock card data for testing
+            createMockCards: function (count = 10) {
+                const cards = [];
+                const categories = ['economy', 'environment', 'social', 'foreign_policy'];
+
+                for (let i = 0; i < count; i++) {
+                    const card = {
+                        id: `card-${ i }`,
+                        name: `Politician ${ i }`,
+                        party: `Party ${ i % 3 }`,
+                        image: `politician${ i }.jpg`,
+                        values: {}
+                    };
+
+                    // Add random values for each category
+                    categories.forEach(category => {
+                        card.values[category] = Math.floor(Math.random() * 100);
+                    });
+
+                    cards.push(card);
+                }
+
+                return cards;
+            },
+
+            // Wait for a specified condition with timeout
+            waitFor: function (condition, timeout = 1000) {
+                return new Promise((resolve, reject) => {
+                    const startTime = Date.now();
+
+                    const check = () => {
+                        if (condition()) {
+                            resolve();
+                        } else if (Date.now() - startTime > timeout) {
+                            reject(new Error('Timeout waiting for condition'));
+                        } else {
+                            setTimeout(check, 50);
+                        }
+                    };
+
+                    check();
+                });
+            }
+        };
+    </script>
+
+    <!-- Import test runner -->
+    <script src="js/test-runner.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .test-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .secondary-button {
+            padding: 10px 20px;
+            background-color: #607D8B;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .secondary-button:hover {
+            background-color: #455A64;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Test UI will be generated by the test-runner.js script -->
+</body>
+
+</html>

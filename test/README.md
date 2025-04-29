@@ -1,104 +1,93 @@
-# Test Runner Scripts
+# Political Quartett Test Suite
 
-This directory contains scripts for running tests for the Political Quartett Game project.
+This directory contains tests for verifying the functionality of the Political Quartett game components.
 
-## Available Scripts
+## Test Structure
 
-- `run-tests.sh` - Shell script for Linux/macOS systems
-- `run-tests.bat` - Batch script for Windows systems
+The test suite is organized by components:
 
-## Features
-
-Both scripts include:
-
-- Automatic server management (start/stop)
-- Basic test execution
-- Optional UI tests with Puppeteer
-- Colored output for better readability
-
-## Usage
-
-### On Linux/macOS:
-
-```bash
-# Make sure the script is executable
-chmod +x test/run-tests.sh
-
-# Run the script
-./test/run-tests.sh
-```
-
-### On Windows:
-
-```batch
-# Run the script
-test\run-tests.bat
-```
-
-## Test Types
-
-1. **Basic tests**: Simple tests that verify basic functionality
-2. **UI tests**: More advanced tests using Puppeteer to test the user interface
-
-## Configuration
-
-You can modify the scripts to add your specific test commands by editing the following sections:
-
-- `run_basic_tests` function - Add your basic test commands
-- `run_ui_tests` function - Add your UI test commands using Puppeteer
-
-## Dependencies
-
-- For UI tests: [Puppeteer](https://pptr.dev/) (will be installed if needed)
-- Basic tests require Node.js
-
-## Test Files
-
-- `basic-test.js` - Basic server connectivity and file structure tests
-- `game-test.js` - UI tests for game mechanics using Puppeteer
-- `multiplayer-test.js` - Multiplayer and matchmaking tests using two browser instances
-- `lobby-test.js` - Tests for the lobby system
+- `game-engine-test.js` - Tests for the GameEngine component
+- `game-commands-test.js` - Tests for the GameCommands component
+- `card-manager-test.js` - Tests for the CardManager component
+- `game-events-test.js` - Tests for the GameEvents component
+- `network-manager-test.js` - Tests for the NetworkManager component
 
 ## Running Tests
 
-Use the provided scripts to run the tests:
+To run the tests:
 
-- Windows PowerShell: `.\test\run-tests.ps1`
-- Windows Command Prompt: `test\run-tests.bat`
-- Linux/macOS: `./test/run-tests.sh`
+1. Open `test.html` in a web browser
+2. Click the "Run All Tests" button
+3. View test results in the console output or in the UI
 
-### Command-line Options
+## Test Runner
 
-- `--all` or `-a`: Run all tests sequentially and wait for all to complete successfully before proceeding
-  - Example: `./test/run-tests.sh --all`
-  - This will run basic tests, UI tests, and multiplayer tests in sequence
-  - Execution will stop immediately if any test fails
-  - The script will exit with code 0 only if ALL tests pass
+The test runner (`js/test-runner.js`) provides:
 
-### Prerequisites
+- Automatic test loading and execution
+- A visual interface for viewing test results
+- Console output redirection to the UI
+- Individual test module execution
 
-- Node.js and npm installed
-- Server must be running (scripts will start it if not running)
-- Puppeteer (for UI and multiplayer tests - scripts will offer to install if missing)
+## Writing New Tests
 
-## Screenshot Directory
+To add a new test file:
 
-UI and multiplayer tests save screenshots to the `test/screenshots` directory for debugging purposes.
+1. Create a new JavaScript file in the `test` directory
+2. Implement a main test function (e.g., `runYourComponentTests()`)
+3. Use the `assert` function to validate expected outcomes
+4. Add the test module to the imports list in `test-runner.js`
 
-## Making Scripts Executable (Linux/macOS)
+### Test Function Template
 
-If you're on Linux or macOS, you may need to make the shell script executable:
+```javascript
+function runYourComponentTests() {
+    console.log("Running YourComponent tests...");
 
-```bash
-chmod +x test/run-tests.sh
+    // Helper assertion function
+    function assert(condition, message) {
+        if (!condition) {
+            console.error(`❌ Assertion failed: ${message}`);
+            throw new Error(message);
+        } else {
+            console.log(`✅ ${message}`);
+        }
+    }
+
+    // Your test functions
+    function testSomeFeature() {
+        // Test implementation
+        assert(true, "Feature works correctly");
+    }
+
+    // Run all tests
+    try {
+        testSomeFeature();
+        // More tests...
+
+        console.log("✅ All YourComponent tests passed!");
+    } catch (error) {
+        console.error("❌ YourComponent tests failed:", error.message);
+    }
+}
+
+// Register with test runner
+if (typeof window.testModules === 'undefined') {
+    window.testModules = [];
+}
+window.testModules.push(runYourComponentTests);
 ```
 
-Alternatively, you can use the included PowerShell script:
+## Mocking Dependencies
 
-```bash
-pwsh test/make-scripts-executable.ps1
-```
+Each test file includes mock implementations of its dependencies:
 
-## Test Report
+- Mock event systems
+- Mock network connections
+- Mock game state
 
-After running the tests, a summary will be displayed showing how many tests passed, failed, or were skipped.
+This allows for isolated testing of components without relying on external systems.
+
+## Continuous Integration
+
+In a production environment, these tests should be integrated with a CI/CD pipeline to run automatically on each code change.

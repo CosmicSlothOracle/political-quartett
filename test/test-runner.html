@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Political Card Game Test Suite</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        #test-container {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #1e1e1e;
+            color: #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            overflow: auto;
+            max-height: 70vh;
+        }
+
+        #controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .test-selection {
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .test-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #test-output h3 {
+            color: #4CAF50;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        #test-output h4 {
+            color: #2196F3;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        #test-output p {
+            margin: 0.25rem 0;
+            line-height: 1.4;
+        }
+
+        .success {
+            color: #4CAF50;
+        }
+
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        .test-title {
+            color: #9C27B0;
+            font-weight: bold;
+        }
+
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Political Card Game Test Suite</h1>
+    </header>
+
+    <div class="container">
+        <div id="controls">
+            <button id="run-all-tests">Run All Tests</button>
+            <button id="run-selected-tests">Run Selected Tests</button>
+            <button id="clear-output">Clear Output</button>
+        </div>
+
+        <div class="test-selection">
+            <div class="test-checkbox">
+                <input type="checkbox" id="test-game-events" checked>
+                <label for="test-game-events">GameEvents</label>
+            </div>
+            <div class="test-checkbox">
+                <input type="checkbox" id="test-game-state" checked>
+                <label for="test-game-state">GameState</label>
+            </div>
+            <div class="test-checkbox">
+                <input type="checkbox" id="test-game-engine" checked>
+                <label for="test-game-engine">GameEngine</label>
+            </div>
+            <div class="test-checkbox">
+                <input type="checkbox" id="test-game-commands" checked>
+                <label for="test-game-commands">GameCommands</label>
+            </div>
+            <div class="test-checkbox">
+                <input type="checkbox" id="test-card-manager" checked>
+                <label for="test-card-manager">CardManager</label>
+            </div>
+            <div class="test-checkbox">
+                <input type="checkbox" id="test-network-manager" checked>
+                <label for="test-network-manager">NetworkManager</label>
+            </div>
+            <div class="test-checkbox">
+                <input type="checkbox" id="test-ui-adapter" checked>
+                <label for="test-ui-adapter">UI Adapter</label>
+            </div>
+        </div>
+
+        <div id="test-container">
+            <div id="test-output">
+                <p>Test output will appear here. Select tests to run and click a run button above.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import tests as ES modules -->
+    <script type="module">
+        import runGameEventsTests from './game-events-test.js';
+        import runGameStateTests from './game-state-test.js';
+        import runGameEngineTests from './game-engine-test.js';
+        import runGameCommandsTests from './game-commands-test.js';
+        import runCardManagerTests from './card-manager-test.js';
+        import runNetworkManagerTests from './network-manager-test.js';
+        import runUIAdapterTests from './ui-adapter-test.js';
+
+        // Map test functions to checkbox IDs
+        const testMap = {
+            'test-game-events': { fn: runGameEventsTests, name: 'GameEvents' },
+            'test-game-state': { fn: runGameStateTests, name: 'GameState' },
+            'test-game-engine': { fn: runGameEngineTests, name: 'GameEngine' },
+            'test-game-commands': { fn: runGameCommandsTests, name: 'GameCommands' },
+            'test-card-manager': { fn: runCardManagerTests, name: 'CardManager' },
+            'test-network-manager': { fn: runNetworkManagerTests, name: 'NetworkManager' },
+            'test-ui-adapter': { fn: runUIAdapterTests, name: 'UI Adapter' }
+        };
+
+        // Override console methods to also output to test container
+        const outputElement = document.getElementById('test-output');
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalAssert = console.assert;
+
+        console.log = function (...args) {
+            originalLog.apply(console, args);
+            appendToOutput(args.join(' '));
+        };
+
+        console.error = function (...args) {
+            originalError.apply(console, args);
+            appendToOutput(args.join(' '), 'error');
+        };
+
+        console.assert = function (condition, ...args) {
+            originalAssert.apply(console, [condition, ...args]);
+            if (!condition) {
+                appendToOutput(`Assertion failed: ${ args.join(' ') }`, 'error');
+            }
+        };
+
+        // Helper function to append formatted output
+        function appendToOutput(message, className = '') {
+            const paragraph = document.createElement('p');
+
+            if (message.includes('🧪🧪🧪 STARTING ALL TESTS')) {
+                const heading = document.createElement('h3');
+                heading.textContent = message;
+                outputElement.appendChild(heading);
+                return;
+            }
+
+            if (message.includes('TESTING CORE COMPONENTS') || message.includes('TESTING FEATURE COMPONENTS')) {
+                const heading = document.createElement('h4');
+                heading.textContent = message;
+                outputElement.appendChild(heading);
+                return;
+            }
+
+            if (message.includes('🧪 Starting')) {
+                paragraph.textContent = message;
+                paragraph.className = 'test-title';
+            } else if (message.includes('✅')) {
+                paragraph.textContent = message;
+                paragraph.className = 'success';
+            } else if (message.includes('❌') || className === 'error') {
+                paragraph.textContent = message;
+                paragraph.className = 'error';
+            } else {
+                paragraph.textContent = message;
+            }
+
+            outputElement.appendChild(paragraph);
+
+            // Auto-scroll to bottom
+            outputElement.parentElement.scrollTop = outputElement.parentElement.scrollHeight;
+        }
+
+        // Run a single test with proper error handling
+        async function runTest(testFn, testName) {
+            console.log(`\nRunning ${ testName } Tests...`);
+
+            try {
+                const result = testFn();
+                if (result instanceof Promise) {
+                    await result;
+                }
+                console.log(`✅ ${ testName } Tests Completed Successfully`);
+                return true;
+            } catch (error) {
+                console.error(`❌ ${ testName } Tests Failed:`);
+                console.error(`   ${ error.message }`);
+                return false;
+            }
+        }
+
+        // Run all tests
+        async function runAllTests() {
+            clearOutput();
+            console.log('🧪🧪🧪 STARTING ALL TESTS 🧪🧪🧪');
+            console.log('=================================');
+
+            console.log('\n📋 TESTING CORE COMPONENTS');
+            console.log('---------------------------------');
+
+            let allPassed = true;
+
+            // Run core tests first
+            for (const testId of ['test-game-events', 'test-game-state', 'test-game-engine', 'test-game-commands']) {
+                const test = testMap[testId];
+                const passed = await runTest(test.fn, test.name);
+                if (!passed) allPassed = false;
+            }
+
+            console.log('\n📋 TESTING FEATURE COMPONENTS');
+            console.log('---------------------------------');
+
+            // Then run feature tests
+            for (const testId of ['test-card-manager', 'test-network-manager', 'test-ui-adapter']) {
+                const test = testMap[testId];
+                const passed = await runTest(test.fn, test.name);
+                if (!passed) allPassed = false;
+            }
+
+            console.log('\n=================================');
+            if (allPassed) {
+                console.log('✅✅✅ ALL TESTS COMPLETED SUCCESSFULLY ✅✅✅');
+            } else {
+                console.error('❌❌❌ SOME TESTS FAILED ❌❌❌');
+            }
+        }
+
+        // Run only selected tests
+        async function runSelectedTests() {
+            clearOutput();
+            console.log('🧪🧪🧪 STARTING SELECTED TESTS 🧪🧪🧪');
+            console.log('=================================');
+
+            const selectedTests = Object.entries(testMap)
+                .filter(([id]) => document.getElementById(id).checked)
+                .map(([, test]) => test);
+
+            if (selectedTests.length === 0) {
+                console.error('No tests selected. Please select at least one test to run.');
+                return;
+            }
+
+            let allPassed = true;
+
+            for (const test of selectedTests) {
+                const passed = await runTest(test.fn, test.name);
+                if (!passed) allPassed = false;
+            }
+
+            console.log('\n=================================');
+            if (allPassed) {
+                console.log('✅✅✅ SELECTED TESTS COMPLETED SUCCESSFULLY ✅✅✅');
+            } else {
+                console.error('❌❌❌ SOME TESTS FAILED ❌❌❌');
+            }
+        }
+
+        // Clear output
+        function clearOutput() {
+            outputElement.innerHTML = '';
+        }
+
+        // Set up button handlers
+        document.getElementById('run-all-tests').addEventListener('click', runAllTests);
+        document.getElementById('run-selected-tests').addEventListener('click', runSelectedTests);
+        document.getElementById('clear-output').addEventListener('click', clearOutput);
+    </script>
+</body>
+
+</html>
